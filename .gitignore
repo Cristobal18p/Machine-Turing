@@ -1,0 +1,25 @@
+# Referencia Java
+/example-code/
+
+# Archivos de ejemplo, si no deseas subirlos
+/archivo_ejemplo/
+/src/archivo_ejemplo/
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+
+# Entornos virtuales
+.venv/
+venv/
+env/
+
+# Configuración local
+.vscode/
+.idea/
+
+# Archivos generados
+*.pyc
+*.dot
+*.png
+*.gv
