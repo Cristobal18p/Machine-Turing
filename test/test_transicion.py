@@ -79,6 +79,16 @@ class TestTransicionValidacion(unittest.TestCase):
         with self.assertRaises(ErrorTransicion):
             Transicion("q0", "", "q1", "b", "R")
 
+    def test_simbolo_leido_multiples_caracteres(self):
+        with self.assertRaises(ErrorTransicion) as ctx:
+            Transicion("q0", "ab", "q1", "b", "R")
+        self.assertIn("exactamente un caracter", str(ctx.exception))
+
+    def test_simbolo_escrito_multiples_caracteres(self):
+        with self.assertRaises(ErrorTransicion) as ctx:
+            Transicion("q0", "a", "q1", "XYZ", "R")
+        self.assertIn("exactamente un caracter", str(ctx.exception))
+
     def test_estado_destino_vacio(self):
         with self.assertRaises(ErrorTransicion):
             Transicion("q0", "a", "", "b", "R")
