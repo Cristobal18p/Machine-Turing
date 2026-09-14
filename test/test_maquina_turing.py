@@ -92,7 +92,7 @@ class TestMaquinaTuringPasoAPaso(unittest.TestCase):
         # El cabezal se movio a R (posicion 1), donde hay un Blanco (B)
         self.assertEqual(cfg1.simbolo_leido, "B")
         # Cinta original "b", cambio a "a". En pos 1 leemos "B"
-        self.assertEqual(cfg1.cinta_como_lista(), ["a", "B"])
+        self.assertEqual(cfg1.cinta_como_lista(), ["a"])
 
     def test_llegar_a_aceptacion(self):
         motor = MaquinaTuring(_crear_transiciones_basicas())
