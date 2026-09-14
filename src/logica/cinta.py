@@ -40,8 +40,6 @@ class Cinta:
         self._celdas: dict[int, str] = {}
         for i, caracter in enumerate(cadena):
             self._celdas[i] = caracter
-        # Blanco a la derecha de la entrada.
-        self._celdas[len(cadena)] = BLANCO
         self._posicion: int = 0
 
 
@@ -87,8 +85,6 @@ class Cinta:
         Si la nueva posicion no existe en la cinta, se crea con BLANCO.
         """
         self._posicion += 1
-        if self._posicion not in self._celdas:
-            self._celdas[self._posicion] = BLANCO
 
     def mover_izquierda(self) -> None:
         """Mueve el cabezal una posicion a la izquierda.
@@ -97,8 +93,6 @@ class Cinta:
         se crea con BLANCO.
         """
         self._posicion -= 1
-        if self._posicion not in self._celdas:
-            self._celdas[self._posicion] = BLANCO
 
     def mover(self, direccion: str) -> None:
         """Mueve el cabezal en la direccion indicada.
