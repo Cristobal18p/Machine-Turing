@@ -1,0 +1,28 @@
+# Acepta cadenas binarias que contienen la subcadena 101
+
+# Busqueda del primer 1
+q0, 0 -> q0, 0, R
+q0, 1 -> q1, 1, R
+
+# Se encontro 1
+q1, 0 -> q2, 0, R
+q1, 1 -> q1, 1, R
+
+# Se encontro 10
+q2, 0 -> q0, 0, R
+q2, 1 -> q3, 1, R
+
+# Se encontro 101; ahora recorre el resto
+q3, 0 -> q4, 0, R
+q3, 1 -> q5, 1, R
+q3, B -> qf, B, R
+
+# Recorrido posterior sobre 0
+q4, 0 -> q4, 0, R
+q4, 1 -> q5, 1, R
+q4, B -> qf, B, R
+
+# Recorrido posterior sobre 1
+q5, 0 -> q4, 0, R
+q5, 1 -> q5, 1, R
+q5, B -> qf, B, R
