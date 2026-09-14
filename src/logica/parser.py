@@ -100,6 +100,12 @@ def parsear_archivo(ruta: str | Path) -> ResultadoParser:
             if simbolo not in simbolos_vistos:
                 simbolos_vistos[simbolo] = None
 
+    # Validacion estricta de estados inicial y final
+    if "q0" not in estados_vistos:
+        raise ErrorArchivo("Archivo Invalido: No se detecto el estado inicial 'q0' en las reglas.")
+    if "qf" not in estados_vistos:
+        raise ErrorArchivo("Archivo Invalido: No se detecto el estado de aceptacion 'qf' en las reglas.")
+
     estados = _ordenar_estados(list(estados_vistos.keys()))
     simbolos = _ordenar_simbolos(list(simbolos_vistos.keys()))
 
