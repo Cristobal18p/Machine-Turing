@@ -1,9 +1,6 @@
 # Referencia Java
 /example-code/
 
-# Archivos de ejemplo, si no deseas subirlos
-/archivo_ejemplo/
-/src/archivo_ejemplo/
 
 # Caché de Python
 __pycache__/
