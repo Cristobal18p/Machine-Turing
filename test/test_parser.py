@@ -49,11 +49,11 @@ class TestParserArchivoCorrecto(unittest.TestCase):
         os.unlink(ruta)
 
     def test_sin_espacios(self):
-        ruta = _crear_archivo("q0,a->q1,b,R\n")
+        ruta = _crear_archivo("q0,a->qf,b,R\n")
         resultado = parsear_archivo(ruta)
 
         t = resultado.transiciones[("q0", "a")]
-        self.assertEqual(t.estado_destino, "q1")
+        self.assertEqual(t.estado_destino, "qf")
         self.assertEqual(t.simbolo_escrito, "b")
         self.assertEqual(t.movimiento, "R")
 
@@ -61,8 +61,8 @@ class TestParserArchivoCorrecto(unittest.TestCase):
 
     def test_espacios_variados(self):
         """Formas con y sin espacios deben producir el mismo resultado."""
-        ruta1 = _crear_archivo("q0,a->q1,b,R\n")
-        ruta2 = _crear_archivo("q0 , a  ->  q1 , b , R\n")
+        ruta1 = _crear_archivo("q0,a->qf,b,R\n")
+        ruta2 = _crear_archivo("q0 , a  ->  qf , b , R\n")
 
         r1 = parsear_archivo(ruta1)
         r2 = parsear_archivo(ruta2)
@@ -76,18 +76,18 @@ class TestParserArchivoCorrecto(unittest.TestCase):
         os.unlink(ruta2)
 
     def test_estados_arbitrarios(self):
-        ruta = _crear_archivo("inicio, X -> fin, Y, R\n")
+        ruta = _crear_archivo("q0, X -> qf, Y, R\n")
         resultado = parsear_archivo(ruta)
 
-        self.assertIn(("inicio", "X"), resultado.transiciones)
-        t = resultado.transiciones[("inicio", "X")]
-        self.assertEqual(t.estado_destino, "fin")
+        self.assertIn(("q0", "X"), resultado.transiciones)
+        t = resultado.transiciones[("q0", "X")]
+        self.assertEqual(t.estado_destino, "qf")
 
         os.unlink(ruta)
 
     def test_simbolos_numericos(self):
         ruta = _crear_archivo(
-            "q0, 1 -> q1, 0, R\n"
+            "q0, 1 -> qf, 0, R\n"
             "q0, 0 -> q0, 0, R\n"
         )
         resultado = parsear_archivo(ruta)
@@ -141,15 +141,9 @@ class TestParserComentariosYVacias(unittest.TestCase):
         os.unlink(ruta)
 
     def test_archivo_solo_comentarios_y_vacias(self):
-        ruta = _crear_archivo(
-            "# Solo comentarios\n"
-            "\n"
-            "# Nada mas\n"
-        )
-        resultado = parsear_archivo(ruta)
-        self.assertEqual(len(resultado.transiciones), 0)
-        self.assertEqual(resultado.estados, [])
-        self.assertEqual(resultado.simbolos, [])
+        ruta = _crear_archivo("\n# C\n  \n")
+        with self.assertRaises(ErrorArchivo):
+            parsear_archivo(ruta)
 
         os.unlink(ruta)
 
@@ -189,16 +183,16 @@ class TestParserEstadosYSimbolos(unittest.TestCase):
         os.unlink(ruta)
 
     def test_estados_sin_q0(self):
-        """Si no aparece q0, no debe forzarse."""
+        """Si no aparece q0, debe fallar."""
         ruta = _crear_archivo("inicio, x -> fin, y, R\n")
-        resultado = parsear_archivo(ruta)
-        self.assertEqual(resultado.estados, ["inicio", "fin"])
+        with self.assertRaises(ErrorArchivo):
+            parsear_archivo(ruta)
 
         os.unlink(ruta)
 
     def test_simbolos_sin_B(self):
         """Si no aparece B, no debe forzarse."""
-        ruta = _crear_archivo("q0, a -> q1, b, R\n")
+        ruta = _crear_archivo("q0, a -> qf, b, R\n")
         resultado = parsear_archivo(ruta)
         self.assertEqual(resultado.simbolos, ["a", "b"])
 
@@ -224,10 +218,8 @@ class TestParserArchivoVacio(unittest.TestCase):
 
     def test_archivo_vacio(self):
         ruta = _crear_archivo("")
-        resultado = parsear_archivo(ruta)
-        self.assertEqual(len(resultado.transiciones), 0)
-        self.assertEqual(resultado.estados, [])
-        self.assertEqual(resultado.simbolos, [])
+        with self.assertRaises(ErrorArchivo):
+            parsear_archivo(ruta)
 
         os.unlink(ruta)
 
@@ -337,7 +329,7 @@ class TestParserTransicionDuplicada(unittest.TestCase):
 
     def test_duplicada_exacta(self):
         ruta = _crear_archivo(
-            "q0, a -> q1, b, R\n"
+            "q0, a -> qf, b, R\n"
             "q0, a -> q2, c, L\n"
         )
         with self.assertRaises(ErrorParser) as ctx:
@@ -350,7 +342,7 @@ class TestParserTransicionDuplicada(unittest.TestCase):
     def test_no_duplicada_diferente_simbolo(self):
         """Mismo estado pero diferente simbolo: NO es duplicado."""
         ruta = _crear_archivo(
-            "q0, a -> q1, b, R\n"
+            "q0, a -> qf, b, R\n"
             "q0, b -> q2, c, L\n"
         )
         resultado = parsear_archivo(ruta)
