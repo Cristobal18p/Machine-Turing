@@ -7,9 +7,15 @@ Este proyecto es una herramienta gráfica e interactiva desarrollada para visual
 Para ejecutar el simulador desde su código fuente, es necesario contar con lo siguiente en su sistema:
 1. **Python:** Versión 3.10 o superior instalado en el equipo.
 2. **Tkinter:** Librería gráfica nativa (generalmente viene preinstalada con Python en Windows/macOS; en distribuciones Linux puede requerir instalar el paquete `python3-tk`).
-3. **Graphviz (Muy Importante):** Necesario para que el panel del diagrama de estados funcione.
+3. **Graphviz (Herramienta del sistema):** Necesario para que el panel del diagrama de estados funcione.
    - **En Windows:** Descargue el instalador desde su página oficial: [https://graphviz.org/download/](https://graphviz.org/download/). *Nota:* Durante la instalación, asegúrese de marcar la casilla **"Add Graphviz to system PATH"**, ya que el instalador de Windows no lo hace por defecto.
    - **En Linux / macOS:** Instálelo directamente desde su terminal (ej. `sudo apt install graphviz` para Ubuntu/Debian, o `brew install graphviz` en Mac). En estos sistemas, el PATH se configura de forma automática.
+4. **Librería de Python (`graphviz`):** Necesaria para conectar Python con la herramienta del sistema instalada en el paso anterior.
+
+**Comando para instalar las dependencias requeridas:**
+```bash
+pip install graphviz
+```
 
 **Comando para iniciar el programa (desde la raíz del proyecto):**
 ```bash
