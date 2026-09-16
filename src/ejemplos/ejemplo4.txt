@@ -1,0 +1,7 @@
+#ejemplo4
+q0, 0 -> q0, B, R 
+q0, 1 -> q1, B, R 
+
+q1, 1 -> q1, B, R 
+q1, B -> qf, B, R 
+

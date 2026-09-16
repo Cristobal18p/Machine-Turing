@@ -384,12 +384,22 @@ class SimuladorApp:
     def _iniciar_maquina(self):
         # Iniciar significa "preparar y ejecutar todo automaticamente" de un solo golpe.
         if self._preparar_motor():
-            self._ejecutar_todo()
+            if self.motor.estado_ejecucion != "EN_CURSO":
+                # Si se rechaza/acepta en el instante cero (ej. primer simbolo no valido)
+                self._refrescar_ui_desde_motor()
+                self._actualizar_botones()
+            else:
+                self._ejecutar_todo()
 
     def _paso_a_paso(self):
         # Si no esta iniciada o ya detuvimos una, reiniciamos el motor y damos 1 paso
         if not self.motor or self.motor.estado_ejecucion not in ["EN_CURSO", "DETENIDA"]:
             if not self._preparar_motor():
+                return
+            if self.motor.estado_ejecucion != "EN_CURSO":
+                # Termina instantaneamente en el Paso 0
+                self._refrescar_ui_desde_motor()
+                self._actualizar_botones()
                 return
                 
         # Avanzar exactamente 1 paso
@@ -472,10 +482,12 @@ class SimuladorApp:
                     solucion_cinta = "".join([cfg.cinta.get(idx, "B") for idx in range(min_idx, max_idx + 1)])
                 else:
                     solucion_cinta = "B"
-                self.lbl_solucion.config(text=f"Cadena Resultante: {solucion_cinta}")
+                self.lbl_solucion.config(text=f"Cadena Resultante: {solucion_cinta}", foreground="green")
             
             elif self.motor.estado_ejecucion == "RECHAZADA" and i == len(self.motor.historial) - 1:
-                self.lbl_solucion.config(text="") # No mostrar solucion final si es rechazada
+                self.lbl_solucion.config(text="Cadena Rechazada", foreground="red")
+                motivo = cfg.motivo_detencion if cfg.motivo_detencion else "La cadena no fue aceptada."
+                messagebox.showerror("Cadena Rechazada", motivo)
 
         self.ultimo_paso_mostrado = len(self.motor.historial) - 1
 
