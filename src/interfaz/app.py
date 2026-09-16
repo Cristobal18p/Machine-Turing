@@ -213,8 +213,14 @@ class SimuladorApp:
         
         # [CORECCION]: Empacamos primero la etiqueta al BOTTOM. Asi nunca se ocultara,
         # sin importar que tan pequeña sea la pantalla.
-        self.lbl_solucion = ttk.Label(frame_historial, text="", font=("Consolas", 14, "bold"), foreground="green")
-        self.lbl_solucion.pack(side=tk.BOTTOM, pady=5)
+        frame_bottom_hist = ttk.Frame(frame_historial)
+        frame_bottom_hist.pack(side=tk.BOTTOM, fill=tk.X, pady=5, padx=5)
+
+        self.lbl_solucion = ttk.Label(frame_bottom_hist, text="", font=("Consolas", 14, "bold"), foreground="green")
+        self.lbl_solucion.pack(side=tk.LEFT)
+
+        self.btn_exportar = ttk.Button(frame_bottom_hist, text="Guardar Historial (.txt)", command=self._exportar_historial, state=tk.DISABLED)
+        self.btn_exportar.pack(side=tk.RIGHT)
 
         # Ahora si empacamos la tabla, la cual tomara unicamente el espacio que sobre.
         scroll_h_y.pack(side=tk.RIGHT, fill=tk.Y)
@@ -556,19 +562,54 @@ class SimuladorApp:
             self.btn_paso.config(state=estado_btn)
             self.btn_stop.config(state=tk.DISABLED)
             self.entry_cadena.config(state=tk.NORMAL)
+            
+            if self.motor and self.motor.estado_ejecucion in ["ACEPTADA", "RECHAZADA", "DETENIDA"]:
+                self.btn_exportar.config(state=tk.NORMAL)
+            else:
+                self.btn_exportar.config(state=tk.DISABLED)
         elif self.hilo_ejecucion and self.hilo_ejecucion.is_alive():
             self.btn_iniciar.config(state=tk.DISABLED)
             self.btn_paso.config(state=tk.DISABLED)
             self.btn_stop.config(state=tk.NORMAL)
             self.entry_cadena.config(state=tk.DISABLED)
+            self.btn_exportar.config(state=tk.DISABLED)
         else:
             self.btn_iniciar.config(state=tk.DISABLED)
             self.btn_paso.config(state=tk.NORMAL)
             self.btn_stop.config(state=tk.DISABLED)
             self.entry_cadena.config(state=tk.NORMAL)
+            self.btn_exportar.config(state=tk.DISABLED)
 
     def _cambiar_estado_lbl(self, texto: str, color: str):
         self.lbl_estado.config(text=texto, foreground=color)
+
+    def _exportar_historial(self):
+        if not self.motor or not self.motor.historial:
+            messagebox.showwarning("Historial Vacio", "No hay descripciones instantaneas para exportar.")
+            return
+            
+        ruta = filedialog.asksaveasfilename(
+            defaultextension=".txt",
+            filetypes=[("Archivos de texto", "*.txt")],
+            title="Guardar Historial de Ejecucion"
+        )
+        if not ruta:
+            return
+            
+        try:
+            with open(ruta, "w", encoding="utf-8") as f:
+                f.write("HISTORIAL DE DESCRIPCIONES INSTANTANEAS\n")
+                f.write("=======================================\n\n")
+                for cfg in self.motor.historial:
+                    id_formal = self._generar_id_formal(cfg)
+                    f.write(f"Paso {cfg.paso}: {id_formal}\n")
+                
+                f.write(f"\n=======================================\n")
+                f.write(f"RESULTADO FINAL: {self.motor.estado_ejecucion}\n")
+                
+            messagebox.showinfo("Exportacion Exitosa", f"El historial fue guardado exitosamente en:\n{ruta}")
+        except Exception as e:
+            messagebox.showerror("Error al guardar", str(e))
 
 
 def run_app():
