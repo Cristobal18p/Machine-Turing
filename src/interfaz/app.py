@@ -56,6 +56,7 @@ class SimuladorApp:
         self.resultado_parser: ResultadoParser | None = None
         self.motor: MaquinaTuring | None = None
         self._img_diagrama = None
+        self.nombre_archivo_actual: str | None = None
         
         # Variables de concurrencia e historial
         self.hilo_ejecucion: threading.Thread | None = None
@@ -293,7 +294,8 @@ class SimuladorApp:
 
         try:
             self.resultado_parser = parsear_archivo(ruta)
-            self.lbl_archivo.config(text=os.path.basename(ruta), foreground="black")
+            self.nombre_archivo_actual = os.path.basename(ruta)
+            self.lbl_archivo.config(text=self.nombre_archivo_actual, foreground="black")
             self._limpiar_historial()
             self._actualizar_tabla()
             self._actualizar_diagrama()
@@ -588,7 +590,12 @@ class SimuladorApp:
             messagebox.showwarning("Historial Vacio", "No hay descripciones instantaneas para exportar.")
             return
             
+        cadena = self.var_cadena.get().strip()
+        nombre_base = self.nombre_archivo_actual.replace('.txt', '') if self.nombre_archivo_actual else "proyecto"
+        nombre_sugerido = f"resultado_{nombre_base}_{cadena}.txt"
+            
         ruta = filedialog.asksaveasfilename(
+            initialfile=nombre_sugerido,
             defaultextension=".txt",
             filetypes=[("Archivos de texto", "*.txt")],
             title="Guardar Historial de Ejecucion"
@@ -599,6 +606,9 @@ class SimuladorApp:
         try:
             with open(ruta, "w", encoding="utf-8") as f:
                 f.write("HISTORIAL DE DESCRIPCIONES INSTANTANEAS\n")
+                f.write("=======================================\n")
+                f.write(f"Archivo de Reglas: {self.nombre_archivo_actual}\n")
+                f.write(f"Cadena Probada: {cadena}\n")
                 f.write("=======================================\n\n")
                 for cfg in self.motor.historial:
                     id_formal = self._generar_id_formal(cfg)
