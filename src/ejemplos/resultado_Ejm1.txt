@@ -1,0 +1,12 @@
+HISTORIAL DE DESCRIPCIONES INSTANTANEAS
+=======================================
+
+Paso 0: q0 a a b b
+Paso 1: a q0 a b b
+Paso 2: a a q0 b b
+Paso 3: a a a q1 b
+Paso 4: a a a b q1 B
+Paso 5: a a a qf b
+
+=======================================
+RESULTADO FINAL: ACEPTADA
