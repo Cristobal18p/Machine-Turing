@@ -1,0 +1,5 @@
+# Practica 3
+q0,0 -> q1,1,R
+q1,1 -> q2,0,L
+q2,1 -> q0,1,R
+q1,B -> qf,B,R
