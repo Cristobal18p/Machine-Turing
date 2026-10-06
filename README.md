@@ -43,10 +43,3 @@ q0, 1 -> q1, 0, R
 q1, 1 -> q1, 0, R
 q1, B -> qf, B, R
 ```
-
----
-
-## Referencia de Desarrollo
-**Universidad de Panamá - Facultad de Informática, Electrónica y Comunicación**  
-**Desarrollado por:** Cristobal Prados, Carlos Gonzalez  
-**Año:** 2026
